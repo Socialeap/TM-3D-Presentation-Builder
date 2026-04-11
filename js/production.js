@@ -110,7 +110,6 @@ iframe {
     border-bottom-color: transparent;
     backdrop-filter: none;
     box-shadow: none;
-    pointer-events: none;
 }
 
 .hud-header > *:not(.header-controls):not(.mobile-menu-toggle),
@@ -134,10 +133,10 @@ iframe {
     padding: 8px 16px;
     border-radius: 999px;
     color: var(--text);
-    background: var(--surface-soft);
-    border: 1px solid var(--line);
-    font-weight: 700;
-    font-size: 0.85rem;
+    background: rgba(255, 255, 255, 0.08);
+    border: 1px solid rgba(255, 255, 255, 0.14);
+    font-weight: 600;
+    font-size: 0.84rem;
     cursor: pointer;
     transition: all 0.2s ease;
     white-space: nowrap;
@@ -217,7 +216,7 @@ iframe {
 
 .header-controls {
     display: flex;
-    gap: 12px;
+    gap: 10px;
     align-items: center;
     justify-content: flex-end;
     min-width: 0;
@@ -270,11 +269,18 @@ option {
 }
 
 .picker-wrap label {
-    font-size: 0.78rem;
+    font-size: 0.72rem;
     color: var(--muted);
     letter-spacing: 0.06em;
     text-transform: uppercase;
     white-space: nowrap;
+}
+
+.picker-wrap select {
+    padding: 8px 12px;
+    font-size: 0.84rem;
+    border-radius: 999px;
+    min-width: 120px;
 }
 
 .cta-button,
@@ -308,16 +314,19 @@ option {
 .cta-button {
     background: var(--accent);
     color: #fff;
-    padding: 13px 18px;
+    padding: 8px 16px;
     font-weight: 700;
-    box-shadow: 0 12px 28px color-mix(in srgb, var(--accent) 28%, transparent);
+    font-size: 0.84rem;
+    box-shadow: 0 8px 20px color-mix(in srgb, var(--accent) 24%, transparent);
 }
 
 .ghost-button {
-    background: rgba(255, 255, 255, 0.12);
+    background: rgba(255, 255, 255, 0.08);
     color: var(--text);
-    padding: 12px 15px;
+    padding: 8px 16px;
     font-weight: 600;
+    font-size: 0.84rem;
+    border: 1px solid rgba(255, 255, 255, 0.14);
 }
 
 .status-pill {
@@ -332,11 +341,11 @@ option {
 .audio-box {
     display: inline-flex;
     align-items: center;
-    gap: 12px;
+    gap: 10px;
     min-width: 0;
-    background: rgba(255, 255, 255, 0.06);
-    border: 1px solid rgba(255, 255, 255, 0.12);
-    padding: 8px 12px;
+    background: rgba(255, 255, 255, 0.08);
+    border: 1px solid rgba(255, 255, 255, 0.14);
+    padding: 6px 14px;
     border-radius: 999px;
 }
 
@@ -823,6 +832,7 @@ option {
     .hud-toggle {
         width: 100%;
         justify-content: center;
+        min-height: 44px;
     }
 
     .hud {
@@ -1097,6 +1107,7 @@ function setDrawerOpen(isOpen) {
 }
 
 function setHeaderVisible(isVisible) {
+    if (!isVisible) { closeMobileMenu(); }
     state.headerVisible = isVisible;
     el.hudHeader.classList.toggle("is-hidden", !isVisible);
     el.hudToggle.textContent = isVisible ? "Hide HUD" : "Show HUD";
@@ -1339,6 +1350,17 @@ function updateMuteLabel() {
 function boot() {
     document.documentElement.style.setProperty("--accent", CONFIG.accentColor || "#0f6fff");
 
+    if (window.location.protocol === "file:") {
+        el.gateTitle.textContent = "Web Hosting Required";
+        el.gateDescription.textContent = "This tour must be served from a web server to load the Matterport 3D model. Upload this file to GitHub Pages or any web host, then visit the hosted URL.";
+        el.enterTour.textContent = "Requires Web Hosting";
+        el.enterTour.disabled = true;
+        el.enterTour.style.opacity = "0.5";
+        el.enterMuted.style.display = "none";
+        el.gateStatus.textContent = "Open from https:// to start the experience.";
+        return;
+    }
+
     if (!Array.isArray(CONFIG.models) || !CONFIG.models.length) {
         document.body.innerHTML = "<p style=\\"padding:24px;font-family:sans-serif;color:white;background:#08111d;\\">This tour file is missing Matterport model data.</p>";
         return;
@@ -1391,6 +1413,10 @@ el.enterTour.addEventListener("click", () => startExperience(false));
 el.enterMuted.addEventListener("click", () => startExperience(true));
 
 el.mobileMenu.addEventListener("click", function () {
+    if (!state.headerVisible) {
+        setHeaderVisible(true);
+        window.clearTimeout(state.headerHideTimer);
+    }
     var controls = el.hudHeader.querySelector(".header-controls");
     var isOpen = controls.classList.toggle("mobile-open");
     el.mobileMenu.setAttribute("aria-expanded", String(isOpen));
