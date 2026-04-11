@@ -113,12 +113,12 @@ iframe {
     pointer-events: none;
 }
 
-.hud-header > *:not(.header-controls),
+.hud-header > *:not(.header-controls):not(.mobile-menu-toggle),
 .header-controls > *:not(.hud-toggle) {
     transition: opacity 0.3s ease, transform 0.3s ease;
 }
 
-.hud-header.is-hidden > *:not(.header-controls),
+.hud-header.is-hidden > *:not(.header-controls):not(.mobile-menu-toggle),
 .hud-header.is-hidden .header-controls > *:not(.hud-toggle) {
     opacity: 0;
     transform: translateY(-20px);
@@ -210,7 +210,7 @@ iframe {
 }
 
 .property-location::before {
-    content: "\u2022";
+    content: "\\u2022";
     margin-right: 8px;
     opacity: 0.5;
 }
@@ -343,6 +343,27 @@ option {
 .audio-box input[type="range"] {
     width: 112px;
     accent-color: var(--accent);
+}
+
+/* --- Mobile menu toggle (hidden on desktop) --- */
+.mobile-menu-toggle {
+    display: none;
+    align-items: center;
+    justify-content: center;
+    width: 40px;
+    height: 40px;
+    border-radius: var(--radius-sm);
+    background: rgba(255, 255, 255, 0.08);
+    border: 1px solid rgba(255, 255, 255, 0.14);
+    color: var(--text);
+    cursor: pointer;
+    transition: background 0.15s ease;
+    pointer-events: auto;
+    flex-shrink: 0;
+}
+
+.mobile-menu-toggle:hover {
+    background: rgba(255, 255, 255, 0.14);
 }
 
 .drawer {
@@ -672,11 +693,32 @@ option {
     border: 0;
 }
 
+/* --- Tablet breakpoint --- */
 @media (max-width: 900px) {
     .hud-header {
         flex-wrap: wrap;
-        padding-top: 12px;
-        padding-bottom: 12px;
+        padding: 10px 16px;
+    }
+
+    .header-brand img {
+        max-width: 100px;
+        max-height: 28px;
+    }
+
+    .brand-name {
+        font-size: 0.88rem;
+    }
+
+    .property-title {
+        font-size: 0.92rem;
+    }
+
+    .header-controls {
+        gap: 8px;
+    }
+
+    .picker-wrap label {
+        display: none;
     }
 
     .header-controls,
@@ -685,23 +727,119 @@ option {
     }
 }
 
+/* --- Mobile breakpoint --- */
 @media (max-width: 640px) {
+    .hud-header {
+        flex-wrap: wrap;
+        padding: 10px 14px;
+        gap: 6px;
+    }
+
+    .header-brand {
+        order: 1;
+        flex: 1;
+        gap: 8px;
+    }
+
+    .header-brand img {
+        max-width: 80px;
+        max-height: 24px;
+    }
+
+    .brand-name {
+        font-size: 0.82rem;
+    }
+
+    .mobile-menu-toggle {
+        order: 2;
+        display: flex;
+    }
+
+    .header-property {
+        order: 3;
+        width: 100%;
+        flex: unset;
+        gap: 5px;
+        font-size: 0.85rem;
+    }
+
+    .eyebrow-label {
+        font-size: 0.65rem;
+    }
+
+    .property-title {
+        font-size: 0.85rem;
+    }
+
+    .property-location {
+        font-size: 0.75rem;
+    }
+
+    .header-controls {
+        order: 4;
+        width: 100%;
+        display: none;
+        flex-direction: column;
+        gap: 8px;
+        padding-top: 10px;
+        border-top: 1px solid var(--line);
+    }
+
+    .header-controls.mobile-open {
+        display: flex;
+    }
+
+    .picker-wrap {
+        width: 100%;
+        flex-direction: column;
+        gap: 4px;
+    }
+
+    .picker-wrap label {
+        display: block;
+        font-size: 0.7rem;
+    }
+
+    .picker-wrap select {
+        width: 100%;
+    }
+
+    .cta-button,
+    .ghost-button {
+        min-height: 44px;
+        font-size: 0.88rem;
+    }
+
+    .audio-box {
+        width: 100%;
+        justify-content: space-between;
+    }
+
+    .audio-box input[type="range"] {
+        flex: 1;
+        width: auto;
+        min-width: 80px;
+    }
+
+    .hud-toggle {
+        width: 100%;
+        justify-content: center;
+    }
+
     .hud {
         padding: 12px;
+    }
+
+    .drawer {
+        width: 100vw;
     }
 
     .drawer-grid {
         grid-template-columns: 1fr;
     }
 
-    .audio-box {
-        width: 100%;
-        justify-content: flex-start;
-        flex-wrap: wrap;
-    }
-
-    .audio-box input[type="range"] {
-        width: min(44vw, 180px);
+    .gate-card {
+        padding: 28px 20px;
     }
 }
     </style>
@@ -745,6 +883,10 @@ option {
         </div>
         <button type="button" class="ghost-button hud-toggle interactive" id="hud-toggle" aria-expanded="true">Hide HUD</button>
     </div>
+
+    <button type="button" class="mobile-menu-toggle interactive" id="mobile-menu" aria-label="Menu" aria-expanded="false">
+        <svg width="20" height="20" viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><line x1="3" y1="5" x2="17" y2="5"/><line x1="3" y1="10" x2="17" y2="10"/><line x1="3" y1="15" x2="17" y2="15"/></svg>
+    </button>
 </header>
     </div>
 
@@ -878,6 +1020,7 @@ const el = {
     audioBox: document.getElementById("audio-box"),
     muteToggle: document.getElementById("mute-toggle"),
     volumeRange: document.getElementById("volume-range"),
+    mobileMenu: document.getElementById("mobile-menu"),
     drawer: document.getElementById("contact-drawer"),
     closeDrawer: document.getElementById("close-drawer"),
     drawerSubtitle: document.getElementById("drawer-subtitle"),
@@ -909,7 +1052,7 @@ function safeText(value, fallback) {
 }
 
 function normalizePhone(value) {
-    return String(value || "").replace(/[^\\d+]/g, "");
+    return String(value || "").replace(/[^\\\\d+]/g, "");
 }
 
 function buildMatterportUrl(model) {
@@ -935,11 +1078,20 @@ function getActiveMusicSource() {
     return model && model.musicUrl ? String(model.musicUrl).trim() : "";
 }
 
+function closeMobileMenu() {
+    var controls = el.hudHeader.querySelector(".header-controls");
+    if (controls) {
+        controls.classList.remove("mobile-open");
+        el.mobileMenu.setAttribute("aria-expanded", "false");
+    }
+}
+
 function setDrawerOpen(isOpen) {
     el.drawer.classList.toggle("open", isOpen);
     el.drawer.setAttribute("aria-hidden", String(!isOpen));
 
     if (isOpen) {
+        closeMobileMenu();
         setHeaderVisible(true);
         window.clearTimeout(state.headerHideTimer);
     }
@@ -1117,7 +1269,7 @@ function buildEmailParts() {
     return {
         to: CONFIG.contact.email,
         subject: "Inquiry: " + safeText(model.name, "Property Tour"),
-        body: lines.join("\\n"),
+        body: lines.join("\\\\n"),
     };
 }
 
@@ -1137,7 +1289,7 @@ function openProviderCompose(provider, triggerBtn) {
     } else if (provider === "mailto") {
         url = "mailto:" + parts.to + "?subject=" + subject + "&body=" + body;
     } else if (provider === "copy") {
-        var text = "To: " + parts.to + "\\nSubject: " + parts.subject + "\\n\\n" + parts.body;
+        var text = "To: " + parts.to + "\\\\nSubject: " + parts.subject + "\\\\n\\\\n" + parts.body;
         navigator.clipboard.writeText(text).then(function () {
             if (triggerBtn) {
                 triggerBtn.textContent = "Copied!";
@@ -1189,7 +1341,7 @@ function boot() {
     document.documentElement.style.setProperty("--accent", CONFIG.accentColor || "#0f6fff");
 
     if (!Array.isArray(CONFIG.models) || !CONFIG.models.length) {
-        document.body.innerHTML = "<p style=\\"padding:24px;font-family:sans-serif;color:white;background:#08111d;\\">This tour file is missing Matterport model data.</p>";
+        document.body.innerHTML = "<p style=\\\\"padding:24px;font-family:sans-serif;color:white;background:#08111d;\\\\">This tour file is missing Matterport model data.</p>";
         return;
     }
 
@@ -1210,10 +1362,12 @@ function boot() {
 }
 
 el.propertySelect.addEventListener("change", async (event) => {
+    closeMobileMenu();
     await loadTour(Number(event.target.value));
 });
 
 el.hudToggle.addEventListener("click", () => {
+    closeMobileMenu();
     const nextVisible = !state.headerVisible;
     setHeaderVisible(nextVisible);
     if (nextVisible) {
@@ -1236,6 +1390,12 @@ el.emailProviders.addEventListener("click", function (event) {
 });
 el.enterTour.addEventListener("click", () => startExperience(false));
 el.enterMuted.addEventListener("click", () => startExperience(true));
+
+el.mobileMenu.addEventListener("click", function () {
+    var controls = el.hudHeader.querySelector(".header-controls");
+    var isOpen = controls.classList.toggle("mobile-open");
+    el.mobileMenu.setAttribute("aria-expanded", String(isOpen));
+});
 
 el.volumeRange.addEventListener("input", () => {
     el.audio.volume = Number(el.volumeRange.value);
@@ -1274,7 +1434,7 @@ document.addEventListener("keydown", (event) => {
 });
 
 boot();
-    <\/script>
+    <\\/script>
 </body>
 </html>`;
 }
