@@ -1,0 +1,344 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Matterport HUD Builder</title>
+    <link rel="icon"
+        href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'%3E%3Crect width='64' height='64' rx='14' fill='%23ff8a3d'/%3E%3Cpath d='M18 44V20h10c8 0 13 4.4 13 11.8S36 44 28 44H18zm8-6c4.2 0 7-2.2 7-6.2s-2.8-6.2-7-6.2h-1.5V38H26z' fill='%2307111f'/%3E%3C/svg%3E">
+    <link rel="stylesheet" href="css/builder.css">
+</head>
+
+<body>
+        <header class="app-header">
+            <div id="builder-hero-content" class="hero-header">
+                <h1>Matterport HUD Builder</h1>
+                <p>Configure a branded, single-page presentation with embedded assets.</p>
+            </div>
+            
+            <div id="builder-readiness-content" class="readiness-strip hidden">
+                <span class="readiness-summary" id="readiness-summary"></span>
+                <div class="readiness-chips" id="readiness-checklist"></div>
+            </div>
+
+            <button type="button" class="btn-secondary" id="toggle-readiness">Export Readiness</button>
+        </header>
+
+        <div class="shell">
+
+        <section class="preview-stage panel">
+            <div class="section-head">
+                <h2>Desktop HUD Preview</h2>
+                <span class="help-text">Live behavior and branding preview</span>
+            </div>
+            <div class="mini-preview">
+                <iframe id="preview-frame" class="preview-frame" title="Live Preview"></iframe>
+                <div class="mini-hud">
+                    <div class="mini-header">
+                        <div class="mini-brand">
+                            <div class="mini-logo" id="mini-logo-box">
+                                <span id="mini-logo-fallback">Logo</span>
+                                <img id="mini-logo" alt="Mini logo preview" class="hidden">
+                            </div>
+                            <div class="mini-brand-name" id="mini-brand-name"></div>
+                        </div>
+
+                        <div class="mini-property-section">
+                            <div class="mini-eyebrow">
+                                <span class="mini-eyebrow-label">Now Touring:</span>
+                            </div>
+                            <span class="mini-title" id="mini-title">Property Title</span>
+                            <span class="mini-location" id="mini-location">Location</span>
+                        </div>
+
+                        <div class="mini-right">
+                            <div class="mini-picker">
+                                <span class="mini-picker-label">Property Collection:</span>
+                                <span class="mini-control" id="mini-selector">1 property</span>
+                            </div>
+                            <div class="mini-tag" id="mini-cta">Contact Agent</div>
+                            <div class="mini-audio-group" id="mini-audio-group">
+                                <span class="mini-control" id="mini-audio">Mute</span>
+                                <div class="mini-volume-bar"></div>
+                            </div>
+                            <div class="mini-control mini-hud-toggle">Hide HUD</div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <div class="layout">
+            <main class="content-stack">
+                <section class="panel panel-card">
+                    <h2>Builder Settings</h2>
+                    <div class="section-head">
+                        <h3>Branding</h3>
+                        <span class="help-text">Logo and HUD styling</span>
+                    </div>
+                    <div class="grid-3">
+                        <div>
+                            <label for="brand-name">Brand / Brokerage Name</label>
+                            <input type="text" id="brand-name" placeholder="Transcendence Media">
+                            <span class="field-hint">Used for the browser title and contact copy.</span>
+                        </div>
+                        <div>
+                            <label for="accent-color">Accent Color</label>
+                            <input type="color" id="accent-color" value="#0f6fff">
+                            <span class="field-hint">Applied to primary buttons, focus states, and highlights.</span>
+                        </div>
+                        <div>
+                            <label for="hud-bg-color">HUD Header Background</label>
+                            <input type="color" id="hud-bg-color" value="#08111d">
+                            <span class="field-hint">Choose a dark color for the HUD header and toggle
+                                background.</span>
+                        </div>
+                    </div>
+                    <div class="compact-field">
+                        <label for="gate-label">Entry Button Label</label>
+                        <input type="text" id="gate-label" placeholder="Explore Tour">
+                        <span class="field-hint">Text shown on the welcome screen before the tour starts.</span>
+                    </div>
+                    <div class="upload-grid" style="margin-top: 14px;">
+                        <div class="upload-card">
+                            <div>
+                                <label for="logo-file">Primary Logo</label>
+                                <input type="file" id="logo-file" class="visually-hidden-file"
+                                    accept=".png,.jpg,.jpeg,.svg,.webp,image/png,image/jpeg,image/svg+xml,image/webp">
+                                <span class="field-hint">Upload a PNG, JPG, SVG, or WebP logo. PNG with transparency
+                                    usually works best. Embedded directly into the export.</span>
+                            </div>
+                            <div class="upload-actions">
+                                <button type="button" class="btn-secondary" id="choose-logo">Choose Logo File</button>
+                                <button type="button" class="btn-secondary" id="clear-logo">Clear Logo</button>
+                                <span class="audio-chip" id="logo-status">No file uploaded</span>
+                            </div>
+                            <div class="preview-box" id="logo-preview-box">
+                                <span class="help-text" id="logo-preview-empty">Logo preview will appear here</span>
+                                <img id="logo-preview" alt="Logo preview" class="hidden" decoding="async">
+                            </div>
+                        </div>
+                        <div class="upload-card">
+                            <div>
+                                <label for="favicon-file">Favicon / Tab Icon</label>
+                                <input type="file" id="favicon-file" class="visually-hidden-file"
+                                    accept=".png,.jpg,.jpeg,.svg,.webp,image/png,image/jpeg,image/svg+xml,image/webp">
+                                <span class="field-hint">Optional. Upload a PNG, JPG, SVG, or WebP icon. If left empty,
+                                    the primary logo is automatically used as the favicon fallback.</span>
+                            </div>
+                            <div class="upload-actions">
+                                <button type="button" class="btn-secondary" id="choose-favicon">Choose Icon
+                                    File</button>
+                                <button type="button" class="btn-secondary" id="clear-favicon">Clear Favicon</button>
+                                <span class="audio-chip" id="favicon-status">No favicon selected</span>
+                            </div>
+                            <div class="preview-box icon-preview-box" id="favicon-preview-box">
+                                <span class="help-text" id="favicon-preview-empty">Icon</span>
+                                <img id="favicon-preview" alt="Favicon preview" class="hidden" decoding="async">
+                            </div>
+                            <span class="field-hint">Preview shows the square tab-icon crop. Export converts the icon to
+                                a local 64x64 Base64 favicon.</span>
+                        </div>
+                    </div>
+                </section>
+
+                <section class="panel panel-card">
+                    <h2>Property Models</h2>
+                    <div class="section-head">
+                        <h3>Property Collection</h3>
+                        <span class="help-text">One page, multiple Matterport tours</span>
+                    </div>
+                    <div class="model-list" id="model-list"></div>
+                    <div class="button-row" style="margin-top: 14px;">
+                        <button type="button" class="btn-secondary" id="add-model">Add Property</button>
+                        <span class="help-text">Matterport model IDs are typically 11 characters and case-sensitive.
+                            Each property can have its own optional music URL.</span>
+                    </div>
+                </section>
+
+                <section class="panel panel-card">
+                    <h2>Agent Contact</h2>
+                    <div class="section-head">
+                        <h3>Contact Details</h3>
+                        <span class="help-text">Used for call, text, and email CTAs</span>
+                    </div>
+                    <div class="grid-2">
+                        <div>
+                            <label for="agent-name">Agent Name</label>
+                            <input type="text" id="agent-name" placeholder="Jordan Ellis">
+                        </div>
+                        <div>
+                            <label for="client-email">Email Address</label>
+                            <input type="email" id="client-email" placeholder="agent@email.com" required>
+                        </div>
+                    </div>
+                    <div class="grid-2" style="margin-top: 14px;">
+                        <div>
+                            <label for="client-phone">Phone Number</label>
+                            <input type="tel" id="client-phone" placeholder="555-012-3456">
+                            <span class="field-hint">Used for click-to-call and click-to-text when provided.</span>
+                        </div>
+                        <div>
+                            <label for="contact-note">Default Welcome Note</label>
+                            <input type="text" id="contact-note"
+                                placeholder="Ask a question or request a private showing.">
+                            <span class="field-hint">Shown in the inquiry drawer of the generated page.</span>
+                        </div>
+                    </div>
+                </section>
+
+                <section class="panel panel-card">
+                    <h2>Matterport Tour Behavior</h2>
+                    <div class="behavior-card behavior-card--action">
+                        <div class="behavior-toolbar">
+                            <div>
+                                <strong>Per-Property Showcase Controls</strong>
+                                <p class="help-text">Assign Matterport parameters to specific models, preview the live
+                                    Showcase URL, and paste deep-link starting locations from inside the behavior modal.
+                                </p>
+                            </div>
+                            <div class="button-row">
+                                <button type="button" class="btn-secondary" id="open-behavior-settings">Configure Tour
+                                    Behavior</button>
+                            </div>
+                        </div>
+                        <div class="hidden" aria-hidden="true">
+                            <input type="hidden" id="embed-params">
+                            <span id="behavior-count">2 parameters selected</span>
+                            <span id="behavior-model-label">Assigned to: Property 1</span>
+                            <span id="behavior-summary">Auto-Play, Disable Scroll Wheel Zoom</span>
+                            <div class="chip-list hidden" id="behavior-chip-list"></div>
+                        </div>
+                    </div>
+                </section>
+            </main>
+
+            <aside class="actions">
+                <div class="panel">
+                    <h2>Export</h2>
+                    <div class="button-row">
+                        <button type="button" class="btn-primary" id="generate-btn">Generate index.html</button>
+                        <button type="button" class="btn-secondary" id="download-sample">Load Sample Data</button>
+                    </div>
+                    <div class="status-card" style="margin-top: 18px;">
+                        <h3>Validation</h3>
+                        <p class="status-message" id="status-message">
+                            Fill in your tour details to enable export.
+                        </p>
+                    </div>
+                    <div class="preview-card" style="margin-top: 18px;">
+                        <h3>What Ships in the Export</h3>
+                        <ul class="checklist" id="checklist">
+                            <li>Single-page Matterport viewer with branded HUD</li>
+                            <li>Property switcher for all valid models entered here</li>
+                            <li>Contact drawer with call, text, and structured email actions</li>
+                            <li>Optional per-property audio start flow plus versioned build metadata and favicon support
+                            </li>
+                        </ul>
+                    </div>
+                    <button type="button" class="btn-secondary" id="open-setup-guide" style="margin-top: 18px; width: 100%;">Step-by-Step Instructions</button>
+                </div>
+            </aside>
+        </div>
+
+    </div>
+
+    <footer class="builder-footer-banner">
+        <div class="footer-content">
+            <p><strong>Current Version:</strong> <span id="version-display">v1.2</span></p>
+            <div class="credits">
+                &copy; Transcendence Media 2026<br>
+                <a href="https://transcendencemedia.com" target="_blank">transcendencemedia.com</a> | info@transcendencemedia.com | 516-362-0890
+            </div>
+        </div>
+    </footer>
+
+    <div class="modal-shell" id="behavior-modal-shell" aria-hidden="true">
+        <div class="modal-backdrop" id="behavior-modal-backdrop"></div>
+        <div class="modal-card" role="dialog" aria-modal="true" aria-labelledby="behavior-modal-title">
+            <div class="modal-head">
+                <div>
+                    <p class="modal-eyebrow">Matterport Tour Behavior Settings</p>
+                    <h2 id="behavior-modal-title">Configure how the Matterport tour loads, moves, and hides UI</h2>
+                    <p>Select the presets you want hardcoded into every exported Matterport URL. Use the live preview
+                        link below to inspect the current parameter set in a separate tab before you export.</p>
+                </div>
+                <div class="modal-head-actions">
+                    <div class="model-assign-picker">
+                        <label for="behavior-model-select">Assign Settings To</label>
+                        <select id="behavior-model-select"></select>
+                    </div>
+                    <button type="button" class="btn-secondary" id="close-behavior-settings">Close</button>
+                </div>
+            </div>
+            <div class="modal-preview">
+                <div class="modal-link-row">
+                    <div>
+                        <label>Live Preview URL <small style="font-weight:normal; opacity:0.7; margin-left:4px;">(preview your showcase behavior without branded HUD)</small></label>
+                        <a id="behavior-preview-link" class="behavior-link is-disabled" href="#" target="_blank"
+                            rel="noreferrer noopener">Add at least one valid Matterport model ID to preview these
+                            behavior settings.</a>
+                    </div>
+                </div>
+                <span class="field-hint">Open this link in a new tab to inspect the current behavior set. Closing this
+                    window keeps the selected configuration for export.</span>
+            </div>
+            <div class="modal-toolbar">
+                <label for="custom-embed-params">Custom / Deep-Link Parameters</label>
+                <input type="text" id="custom-embed-params"
+                    placeholder="sr=-0.11,0.82&ss=18 or paste a full Matterport URL">
+                <span class="field-hint">Use this field for U-key deep links, coordinate launches, or any extra query
+                    pairs not listed in the preset checkboxes below. Manual values override matching preset
+                    parameters.</span>
+                <div class="deep-link-note">
+                    <strong>Choose a Starting View</strong>
+                    <span>Navigate to the specific room and angle you want viewers to see first when your Matterport
+                        model loads. Click the Share icon and check the <a
+                            href="https://support.matterport.com/s/article/Sharing-a-Link-to-Your-Current-Location-in-Showcase?language=en_US"
+                            target="_blank" rel="noreferrer noopener">Link to this location</a> box, or simply press the
+                        <strong>U</strong> key, to generate a deep link with specific coordinates.</span>
+                    <span>Copy that updated URL and paste it here to make the showcase open at that exact starting
+                        point.</span>
+                </div>
+            </div>
+            <div class="behavior-groups" id="behavior-groups"></div>
+        </div>
+    </div>
+
+    <template id="model-row-template">
+        <div class="model-row">
+            <div class="model-meta">
+                <div>
+                    <label>Model ID</label>
+                    <input type="text" class="m-id" placeholder="SxQL3iGyoDo" inputmode="text" spellcheck="false">
+                </div>
+                <div>
+                    <label>Display Name</label>
+                    <input type="text" class="m-name" placeholder="Modern Villa">
+                </div>
+                <div>
+                    <label>Location</label>
+                    <input type="text" class="m-loc" placeholder="Malibu, CA">
+                </div>
+                <div>
+                    <label>Music URL</label>
+                    <input type="url" class="m-music" placeholder="https://cdn.example.com/tour-audio.mp3">
+                </div>
+            </div>
+            <button type="button" class="btn-danger remove-model">Remove</button>
+        </div>
+    </template>
+
+
+    <script src="js/constants.js"></script>
+    <script src="js/utils.js"></script>
+    <script src="js/state.js"></script>
+    <script src="js/behavior.js"></script>
+    <script src="js/uploads.js"></script>
+    <script src="js/config.js"></script>
+    <script src="js/production.js"></script>
+    <script src="js/export.js"></script>
+    <script src="js/main.js"></script>
+</body>
+</html>
