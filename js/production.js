@@ -345,7 +345,6 @@ option {
     accent-color: var(--accent);
 }
 
-/* --- Mobile menu toggle (hidden on desktop) --- */
 .mobile-menu-toggle {
     display: none;
     align-items: center;
@@ -1052,7 +1051,7 @@ function safeText(value, fallback) {
 }
 
 function normalizePhone(value) {
-    return String(value || "").replace(/[^\\\\d+]/g, "");
+    return String(value || "").replace(/[^\\d+]/g, "");
 }
 
 function buildMatterportUrl(model) {
@@ -1269,7 +1268,7 @@ function buildEmailParts() {
     return {
         to: CONFIG.contact.email,
         subject: "Inquiry: " + safeText(model.name, "Property Tour"),
-        body: lines.join("\\\\n"),
+        body: lines.join("\\n"),
     };
 }
 
@@ -1289,7 +1288,7 @@ function openProviderCompose(provider, triggerBtn) {
     } else if (provider === "mailto") {
         url = "mailto:" + parts.to + "?subject=" + subject + "&body=" + body;
     } else if (provider === "copy") {
-        var text = "To: " + parts.to + "\\\\nSubject: " + parts.subject + "\\\\n\\\\n" + parts.body;
+        var text = "To: " + parts.to + "\\nSubject: " + parts.subject + "\\n\\n" + parts.body;
         navigator.clipboard.writeText(text).then(function () {
             if (triggerBtn) {
                 triggerBtn.textContent = "Copied!";
@@ -1341,7 +1340,7 @@ function boot() {
     document.documentElement.style.setProperty("--accent", CONFIG.accentColor || "#0f6fff");
 
     if (!Array.isArray(CONFIG.models) || !CONFIG.models.length) {
-        document.body.innerHTML = "<p style=\\\\"padding:24px;font-family:sans-serif;color:white;background:#08111d;\\\\">This tour file is missing Matterport model data.</p>";
+        document.body.innerHTML = "<p style=\\"padding:24px;font-family:sans-serif;color:white;background:#08111d;\\">This tour file is missing Matterport model data.</p>";
         return;
     }
 
@@ -1434,7 +1433,7 @@ document.addEventListener("keydown", (event) => {
 });
 
 boot();
-    <\\/script>
+    </script>
 </body>
 </html>`;
 }
