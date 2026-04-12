@@ -111,10 +111,10 @@ function loadSampleData() {
 
     el.modelList.innerHTML = "";
     createModelRow({
-        id: "SxQL3iGyoDo",
-        name: "Main Residence",
-        location: "Malibu, CA",
-        musicUrl: "https://cdn.example.com/main-residence.mp3",
+        id: "VtB6EMYs8vp",
+        name: "485 Brickell Ave Unit 3208 | Icon Brickell Tower 3",
+        location: "W Miami | Brickell Condo",
+        musicUrl: "https://files.freemusicarchive.org/storage-freemusicarchive-org/tracks/Bq9HzEyfMcmSBqtJKjVo6KF5hC6JzoF75wgERn04.mp3",
         behavior: {
             hideBranding: true,
             autoPlay: true,
@@ -124,10 +124,10 @@ function loadSampleData() {
         },
     });
     createModelRow({
-        id: "7y3sRwLe9Jp",
-        name: "Guest House",
-        location: "Malibu, CA",
-        musicUrl: "https://cdn.example.com/guest-house.mp3",
+        id: "q1gb1kxgdkV",
+        name: "Event Center - Lobby",
+        location: "Rochester, MN, 55902, US",
+        musicUrl: "https://files.freemusicarchive.org/storage-freemusicarchive-org/tracks/C5whLiC5lqxj9WwSK3In5gS4LCLTg3cEC6m71d6b.mp3",
         behavior: {
             autoPlay: true,
             disableScrollWheelZoom: true,
@@ -137,10 +137,10 @@ function loadSampleData() {
         },
     });
     createModelRow({
-        id: "kA7mX2pQw8Z",
-        name: "Community Clubhouse",
-        location: "Pacific Coast Highway",
-        musicUrl: "",
+        id: "AeuaFwk1RVY",
+        name: "The Roosevelt Hotel",
+        location: "New Orleans, LA, 70112, US",
+        musicUrl: "https://files.freemusicarchive.org/storage-freemusicarchive-org/tracks/cWUDw7GdoWh9vgYyK6Vh4EaVxVYb7dqHr4i06ZQK.mp3",
         behavior: {
             autoPlay: true,
             disableScrollWheelZoom: true,
