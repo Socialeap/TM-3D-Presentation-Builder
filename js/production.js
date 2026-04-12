@@ -1012,21 +1012,19 @@ function buildEmailParts() {
     };
 }
 
+function isMobileDevice() {
+    return /Android|iPhone|iPad|iPod/i.test(navigator.userAgent) || (window.innerWidth <= 768);
+}
+
 function openProviderCompose(provider, triggerBtn) {
     var parts = buildEmailParts();
     var to = encodeURIComponent(parts.to);
     var subject = encodeURIComponent(parts.subject);
     var body = encodeURIComponent(parts.body);
+    var mailtoUrl = "mailto:" + parts.to + "?subject=" + subject + "&body=" + body;
     var url = "";
-    if (provider === "gmail") {
-        url = "https://mail.google.com/mail/?view=cm&to=" + to + "&su=" + subject + "&body=" + body;
-    } else if (provider === "outlook") {
-        url = "https://outlook.live.com/mail/0/deeplink/compose?to=" + parts.to + "&subject=" + subject + "&body=" + body;
-    } else if (provider === "yahoo") {
-        url = "https://compose.mail.yahoo.com/?to=" + to + "&subject=" + subject + "&body=" + body;
-    } else if (provider === "mailto") {
-        url = "mailto:" + parts.to + "?subject=" + subject + "&body=" + body;
-    } else if (provider === "copy") {
+
+    if (provider === "copy") {
         var text = "To: " + parts.to + "\\nSubject: " + parts.subject + "\\n\\n" + parts.body;
         navigator.clipboard.writeText(text).then(function () {
             if (triggerBtn) {
@@ -1035,6 +1033,21 @@ function openProviderCompose(provider, triggerBtn) {
             }
         });
         return;
+    }
+
+    if (isMobileDevice()) {
+        window.location.href = mailtoUrl;
+        return;
+    }
+
+    if (provider === "gmail") {
+        url = "https://mail.google.com/mail/?view=cm&fs=1&tf=cm&to=" + to + "&su=" + subject + "&body=" + body;
+    } else if (provider === "outlook") {
+        url = "https://outlook.live.com/mail/0/deeplink/compose?to=" + parts.to + "&subject=" + subject + "&body=" + body;
+    } else if (provider === "yahoo") {
+        url = "https://compose.mail.yahoo.com/?to=" + to + "&subject=" + subject + "&body=" + body;
+    } else {
+        url = mailtoUrl;
     }
     if (url) { window.open(url, "_blank", "noopener"); }
 }
@@ -1065,7 +1078,7 @@ function boot() {
     document.documentElement.style.setProperty("--accent", CONFIG.accentColor || "#0f6fff");
 
     if (!Array.isArray(CONFIG.models) || !CONFIG.models.length) {
-        document.body.innerHTML = "<p style=\\"padding:24px;font-family:sans-serif;color:white;background:#08111d;\\">This tour file is missing Matterport model data.</p>";
+        document.body.innerHTML = "<p style=\\\"padding:24px;font-family:sans-serif;color:white;background:#08111d;\\\">This tour file is missing Matterport model data.</p>";
         return;
     }
 
