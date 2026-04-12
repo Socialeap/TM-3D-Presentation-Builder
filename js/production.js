@@ -158,7 +158,7 @@ iframe {
 .header-property {
     display: flex;
     align-items: center;
-    gap: 8px;
+    gap: 5px;
     min-width: 0;
     flex: 1;
     overflow: hidden;
@@ -169,7 +169,7 @@ iframe {
     display: flex;
     align-items: center;
     margin: 0;
-    gap: 8px;
+    gap: 5px;
 }
 
 .eyebrow-label {
@@ -619,12 +619,12 @@ option { color: #0f172a; }
 }
 
 @media (max-width: 640px) {
-    .hud-header { flex-wrap: wrap; padding: 10px 14px; gap: 6px; }
+    .hud-header { flex-wrap: wrap; padding: 10px 14px; gap: 6px; background: rgba(8,17,29,0.55); }
     .header-brand { order: 1; flex: 1; gap: 8px; }
     .header-brand img { max-width: 80px; max-height: 24px; }
     .brand-name { font-size: 0.82rem; }
     .mobile-menu-toggle { order: 2; display: flex; }
-    .header-property { order: 3; width: 100%; flex: unset; gap: 5px; font-size: 0.85rem; }
+    .header-property { order: 3; width: 100%; flex: unset; gap: 3px; font-size: 0.85rem; }
     .eyebrow-label { font-size: 0.65rem; }
     .property-title { font-size: 0.85rem; }
     .property-location { font-size: 0.75rem; }
@@ -637,8 +637,9 @@ option { color: #0f172a; }
     .header-controls.mobile-open { display: flex; }
     .picker-wrap { width: 100%; flex-direction: column; gap: 4px; }
     .picker-wrap label { display: block; font-size: 0.7rem; }
-    .picker-wrap select { width: 100%; }
+    .picker-wrap select { width: 100%; min-height: 44px; }
     .cta-button, .ghost-button { min-height: 44px; font-size: 0.88rem; }
+    .header-controls > .cta-button { order: -1; }
     .audio-box { width: 100%; justify-content: space-between; }
     .audio-box input[type="range"] { flex: 1; width: auto; min-width: 80px; }
     .hud-toggle { width: 100%; justify-content: center; min-height: 44px; }
