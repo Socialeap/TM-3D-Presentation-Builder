@@ -113,6 +113,7 @@ function updateBuilderState() {
     updateMiniPreview(config);
     updateReadinessChecklist(config, messages);
     el.generateBtn.disabled = messages.length > 0;
+    el.publishBtn.disabled = messages.length > 0 || state.publishState === "deploying";
 
     if (messages.length) {
         setStatus(messages[0], "error");

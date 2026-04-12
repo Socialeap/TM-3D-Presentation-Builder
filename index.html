@@ -219,6 +219,7 @@
                     <h2>Export</h2>
                     <div class="button-row">
                         <button type="button" class="btn-primary" id="generate-btn">Generate index.html</button>
+                        <button type="button" class="btn-publish" id="publish-btn" disabled>Publish to Web</button>
                         <button type="button" class="btn-secondary" id="download-sample">Load Sample Data</button>
                     </div>
                     <div class="status-card" style="margin-top: 18px;">
@@ -226,6 +227,18 @@
                         <p class="status-message" id="status-message">
                             Fill in your tour details to enable export.
                         </p>
+                    </div>
+                    <div class="publish-result-card hidden" id="publish-result" style="margin-top: 18px;">
+                        <h3>Your Tour is Live</h3>
+                        <div class="publish-url-row">
+                            <a class="publish-url" id="publish-url" href="#" target="_blank" rel="noopener noreferrer"></a>
+                            <button type="button" class="btn-secondary btn-copy" id="copy-publish-url">Copy URL</button>
+                        </div>
+                        <p class="publish-meta" id="publish-meta"></p>
+                        <a class="btn-claim" id="publish-claim" href="#" target="_blank" rel="noopener noreferrer">
+                            Keep this link permanently &mdash; claim your site on Netlify
+                        </a>
+                        <p class="field-hint">Without claiming, the site expires. Claiming is free and lets you add a custom domain.</p>
                     </div>
                     <div class="preview-card" style="margin-top: 18px;">
                         <h3>What Ships in the Export</h3>
@@ -331,6 +344,7 @@
     </template>
 
 
+    <script src="https://cdn.jsdelivr.net/npm/jszip@3.10.1/dist/jszip.min.js"></script>
     <script src="js/constants.js"></script>
     <script src="js/utils.js"></script>
     <script src="js/state.js"></script>

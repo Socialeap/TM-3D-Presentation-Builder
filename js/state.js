@@ -12,6 +12,10 @@ const state = {
     activeBehaviorModelKey: "",
     nextModelKey: 1,
     behaviorModalOpen: false,
+    publishState: "idle",
+    publishUrl: "",
+    publishClaimUrl: "",
+    publishSiteName: "",
 };
 
 const el = {
@@ -71,4 +75,10 @@ const el = {
     toggleReadiness: document.getElementById("toggle-readiness"),
     heroContent: document.getElementById("builder-hero-content"),
     readinessContent: document.getElementById("builder-readiness-content"),
+    publishBtn: document.getElementById("publish-btn"),
+    publishResult: document.getElementById("publish-result"),
+    publishUrl: document.getElementById("publish-url"),
+    copyPublishUrl: document.getElementById("copy-publish-url"),
+    publishMeta: document.getElementById("publish-meta"),
+    publishClaim: document.getElementById("publish-claim"),
 };

@@ -56,6 +56,8 @@ el.behaviorModelSelect.addEventListener("change", () => {
     updateBuilderState();
 });
 el.generateBtn.addEventListener("click", generateFile);
+el.publishBtn.addEventListener("click", publishToNetlify);
+el.copyPublishUrl.addEventListener("click", copyPublishUrl);
 el.sampleBtn.addEventListener("click", loadSampleData);
 
 const SETUP_GUIDE_HTML = [
