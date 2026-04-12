@@ -111,10 +111,10 @@ function loadSampleData() {
 
     el.modelList.innerHTML = "";
     createModelRow({
-        id: "SxQL3iGyoDo",
-        name: "Main Residence",
-        location: "Malibu, CA",
-        musicUrl: "https://cdn.example.com/main-residence.mp3",
+        id: "VtB6EMYs8vp",
+        name: "485 Brickell Ave Unit 3208 | Icon Brickell Tower 3",
+        location: "W Miami | Brickell Condo",
+        musicUrl: "https://files.freemusicarchive.org/storage-freemusicarchive-org/tracks/Bq9HzEyfMcmSBqtJKjVo6KF5hC6JzoF75wgERn04.mp3",
         behavior: {
             hideBranding: true,
             autoPlay: true,
@@ -124,10 +124,10 @@ function loadSampleData() {
         },
     });
     createModelRow({
-        id: "7y3sRwLe9Jp",
-        name: "Guest House",
-        location: "Malibu, CA",
-        musicUrl: "https://cdn.example.com/guest-house.mp3",
+        id: "q1gb1kxgdkV",
+        name: "Event Center - Lobby",
+        location: "Rochester, MN, 55902, US",
+        musicUrl: "https://files.freemusicarchive.org/storage-freemusicarchive-org/tracks/C5whLiC5lqxj9WwSK3In5gS4LCLTg3cEC6m71d6b.mp3",
         behavior: {
             autoPlay: true,
             disableScrollWheelZoom: true,
@@ -137,10 +137,10 @@ function loadSampleData() {
         },
     });
     createModelRow({
-        id: "kA7mX2pQw8Z",
-        name: "Community Clubhouse",
-        location: "Pacific Coast Highway",
-        musicUrl: "",
+        id: "AeuaFwk1RVY",
+        name: "The Roosevelt Hotel",
+        location: "New Orleans, LA, 70112, US",
+        musicUrl: "https://files.freemusicarchive.org/storage-freemusicarchive-org/tracks/cWUDw7GdoWh9vgYyK6Vh4EaVxVYb7dqHr4i06ZQK.mp3",
         behavior: {
             autoPlay: true,
             disableScrollWheelZoom: true,
@@ -184,6 +184,19 @@ function saveNetlifyToken(token) {
     catch (e) { /* localStorage unavailable */ }
 }
 
+function showPublishPhase(phase) {
+    el.publishDeploying.classList.add("hidden");
+    el.publishSuccess.classList.add("hidden");
+    el.publishError.classList.add("hidden");
+    if (phase) {
+        phase.classList.remove("hidden");
+        el.publishResult.classList.remove("hidden");
+        el.publishResult.scrollIntoView({ behavior: "smooth", block: "center" });
+    } else {
+        el.publishResult.classList.add("hidden");
+    }
+}
+
 function saveTokenAndPublish() {
     var token = (el.netlifyToken.value || "").trim();
     if (!token) {
@@ -199,10 +212,11 @@ function saveTokenAndPublish() {
 async function publishToNetlify() {
     var token = getNetlifyToken();
     if (!token) {
+        showPublishPhase(null);
         el.netlifyTokenSetup.classList.remove("hidden");
-        el.publishResult.classList.add("hidden");
+        el.netlifyTokenSetup.scrollIntoView({ behavior: "smooth", block: "center" });
         el.netlifyToken.focus();
-        setStatus("Connect your Netlify account to publish. Paste your token below.", "");
+        setStatus("Connect your Netlify account to publish. Follow the steps below.", "");
         return;
     }
 
@@ -218,9 +232,8 @@ async function publishToNetlify() {
     el.publishBtn.disabled = true;
     el.publishBtn.textContent = "Publishing\u2026";
     el.publishBtn.classList.add("is-deploying");
-    el.publishResult.classList.add("hidden");
     el.netlifyTokenSetup.classList.add("hidden");
-    setStatus("Packaging and deploying your tour\u2026", "");
+    showPublishPhase(el.publishDeploying);
 
     try {
         const versionInfo = buildVersionInfo();
@@ -242,11 +255,11 @@ async function publishToNetlify() {
 
         if (response.status === 401 || response.status === 403) {
             saveNetlifyToken("");
-            throw new Error("Token was rejected by Netlify. Click Publish to Web again to enter a new token.");
+            throw new Error("Your Netlify token was invalid or expired. Click \"Publish to Web\" again to enter a new one.");
         }
 
         if (!response.ok) {
-            throw new Error("Netlify returned status " + response.status);
+            throw new Error("Netlify returned an error (status " + response.status + "). Please try again in a moment.");
         }
 
         const site = await response.json();
@@ -254,7 +267,7 @@ async function publishToNetlify() {
         const claimUrl = site.claim_url || "";
 
         if (!liveUrl) {
-            throw new Error("Deploy succeeded but no URL was returned.");
+            throw new Error("Deploy succeeded but no URL was returned. Please try again.");
         }
 
         state.publishState = "success";
@@ -262,23 +275,20 @@ async function publishToNetlify() {
         state.publishClaimUrl = claimUrl;
         state.publishSiteName = site.name || "";
 
-        el.publishUrl.href = liveUrl;
-        el.publishUrl.textContent = liveUrl;
-        el.publishMeta.textContent = "Site: " + state.publishSiteName;
+        el.publishOpen.href = liveUrl;
+        el.publishUrlDisplay.value = liveUrl;
         el.publishClaim.href = claimUrl;
         el.publishClaim.classList.toggle("hidden", !claimUrl);
-        el.publishResult.classList.remove("hidden");
+        showPublishPhase(el.publishSuccess);
 
         persistNextVersion(versionInfo);
         refreshVersionUI();
         setStatus("Published! Your tour is live.", "success");
     } catch (error) {
         state.publishState = "error";
-        setStatus(
-            ((error && error.message) || "Publishing failed.") +
-            ' Use "Generate index.html" to download and host manually instead.',
-            "error"
-        );
+        el.publishErrorMessage.textContent = (error && error.message) || "An unexpected error occurred.";
+        showPublishPhase(el.publishError);
+        setStatus("Publishing failed. See details below.", "error");
     } finally {
         el.publishBtn.textContent = "Publish to Web";
         el.publishBtn.classList.remove("is-deploying");
@@ -290,9 +300,9 @@ function copyPublishUrl() {
     if (!state.publishUrl) return;
     navigator.clipboard.writeText(state.publishUrl).then(function () {
         el.copyPublishUrl.textContent = "Copied!";
-        setTimeout(function () { el.copyPublishUrl.textContent = "Copy URL"; }, 2000);
+        setTimeout(function () { el.copyPublishUrl.textContent = "Copy Link"; }, 2000);
     }).catch(function () {
         el.copyPublishUrl.textContent = "Copy failed";
-        setTimeout(function () { el.copyPublishUrl.textContent = "Copy URL"; }, 2000);
+        setTimeout(function () { el.copyPublishUrl.textContent = "Copy Link"; }, 2000);
     });
 }
