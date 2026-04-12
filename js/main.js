@@ -152,7 +152,7 @@ const SETUP_GUIDE_HTML = [
     '<span class="sd"><strong>Future Deploys:</strong> After your first setup, log in to Netlify and drag a new file ',
     'onto your <strong>Projects</strong> page to deploy additional sites instantly.</span>',
     '</label></li></ul>',
-    '<a class="pdf-link" href="https://github.com/Socialeap/TM-3D-Presentation-Builder/blob/main/docs/Publish-HUD-Presentation-for-MP.pdf" ',
+    '<a class="pdf-link" href="https://socialeap.github.io/TM-3D-Presentation-Builder/docs/Publish-HUD-Presentation-for-MP.pdf" ',
     'target="_blank" rel="noopener">View Full PDF Guide with Screenshots</a>',
     '<button class="close-btn" onclick="window.close()">Close Guide</button>',
     '</div></body></html>',
