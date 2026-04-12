@@ -1,4 +1,5 @@
 const VERSION_STORAGE_KEY = "matterport-master-builder.version.v1";
+const NETLIFY_TOKEN_KEY = "matterport-master-builder.netlify-token";
 const DEFAULT_VERSION_STATE = { major: 1, minor: 2, lastExportedVersion: "", lastExportedAt: "" };
 const DEFAULT_BEHAVIOR_STATE = {
     hideBranding: false,

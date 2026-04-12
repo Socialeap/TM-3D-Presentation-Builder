@@ -240,6 +240,17 @@
                         </a>
                         <p class="field-hint">Without claiming, the site expires. Claiming is free and lets you add a custom domain.</p>
                     </div>
+                    <div class="netlify-token-card hidden" id="netlify-token-setup" style="margin-top: 18px;">
+                        <h3>Connect to Netlify (one-time setup)</h3>
+                        <p class="field-hint" style="margin-top: 0;">Paste a free personal access token so the builder can publish on your behalf. You only need to do this once.</p>
+                        <div class="token-input-row">
+                            <input type="password" id="netlify-token" class="token-input" placeholder="Paste your Netlify token here" autocomplete="off" />
+                            <button type="button" class="btn-publish" id="save-token-publish">Save &amp; Publish</button>
+                        </div>
+                        <p class="field-hint">
+                            <a href="https://app.netlify.com/user/applications#personal-access-tokens" target="_blank" rel="noopener noreferrer">Get your free token here</a> &mdash; click <strong>New access token</strong>, name it anything, and copy the value.
+                        </p>
+                    </div>
                     <div class="preview-card" style="margin-top: 18px;">
                         <h3>What Ships in the Export</h3>
                         <ul class="checklist" id="checklist">

@@ -81,4 +81,7 @@ const el = {
     copyPublishUrl: document.getElementById("copy-publish-url"),
     publishMeta: document.getElementById("publish-meta"),
     publishClaim: document.getElementById("publish-claim"),
+    netlifyTokenSetup: document.getElementById("netlify-token-setup"),
+    netlifyToken: document.getElementById("netlify-token"),
+    saveTokenPublish: document.getElementById("save-token-publish"),
 };
