@@ -13,7 +13,7 @@ const state = {
     nextModelKey: 1,
     behaviorModalOpen: false,
     publishState: "idle",
-    publishZipBlob: null,
+    publishHtml: null,
 };
 
 const el = {
