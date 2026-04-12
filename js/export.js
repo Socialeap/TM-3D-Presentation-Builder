@@ -173,3 +173,86 @@ async function generateFile() {
         setStatus((error && error.message) || "Unable to embed one or more assets for export.", "error");
     }
 }
+
+async function publishToNetlify() {
+    const draftConfig = buildConfig();
+    const messages = validateConfig(draftConfig);
+    if (messages.length) {
+        setStatus(messages[0], "error");
+        updateBuilderState();
+        return;
+    }
+
+    state.publishState = "deploying";
+    el.publishBtn.disabled = true;
+    el.publishBtn.textContent = "Publishing\u2026";
+    el.publishBtn.classList.add("is-deploying");
+    el.publishResult.classList.add("hidden");
+    setStatus("Packaging and deploying your tour\u2026", "");
+
+    try {
+        const versionInfo = buildVersionInfo();
+        const config = await buildExportConfig(versionInfo);
+        const html = buildProductionHtml(config);
+
+        const zip = new JSZip();
+        zip.file("index.html", html);
+        const zipBlob = await zip.generateAsync({ type: "blob" });
+
+        const response = await fetch("https://api.netlify.com/api/v1/sites", {
+            method: "POST",
+            headers: { "Content-Type": "application/zip" },
+            body: zipBlob,
+        });
+
+        if (!response.ok) {
+            throw new Error("Netlify returned status " + response.status);
+        }
+
+        const site = await response.json();
+        const liveUrl = site.ssl_url || site.url || "";
+        const claimUrl = site.claim_url || "";
+
+        if (!liveUrl) {
+            throw new Error("Deploy succeeded but no URL was returned.");
+        }
+
+        state.publishState = "success";
+        state.publishUrl = liveUrl;
+        state.publishClaimUrl = claimUrl;
+        state.publishSiteName = site.name || "";
+
+        el.publishUrl.href = liveUrl;
+        el.publishUrl.textContent = liveUrl;
+        el.publishMeta.textContent = "Site: " + state.publishSiteName;
+        el.publishClaim.href = claimUrl;
+        el.publishClaim.classList.toggle("hidden", !claimUrl);
+        el.publishResult.classList.remove("hidden");
+
+        persistNextVersion(versionInfo);
+        refreshVersionUI();
+        setStatus("Published! Your tour is live.", "success");
+    } catch (error) {
+        state.publishState = "error";
+        setStatus(
+            ((error && error.message) || "Publishing failed.") +
+            ' Use "Generate index.html" to download and host manually instead.',
+            "error"
+        );
+    } finally {
+        el.publishBtn.textContent = "Publish to Web";
+        el.publishBtn.classList.remove("is-deploying");
+        updateBuilderState();
+    }
+}
+
+function copyPublishUrl() {
+    if (!state.publishUrl) return;
+    navigator.clipboard.writeText(state.publishUrl).then(function () {
+        el.copyPublishUrl.textContent = "Copied!";
+        setTimeout(function () { el.copyPublishUrl.textContent = "Copy URL"; }, 2000);
+    }).catch(function () {
+        el.copyPublishUrl.textContent = "Copy failed";
+        setTimeout(function () { el.copyPublishUrl.textContent = "Copy URL"; }, 2000);
+    });
+}
