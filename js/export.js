@@ -217,7 +217,7 @@ async function publishToNetlify() {
 
         downloadFile(html, "index.html");
 
-        window.open("https://app.netlify.com", "_blank");
+        window.open("https://app.netlify.com/drop", "_blank");
 
         state.publishState = "success";
         showPublishPhase(el.publishSuccess);
