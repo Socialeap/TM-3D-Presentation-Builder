@@ -174,16 +174,6 @@ async function generateFile() {
     }
 }
 
-function getNetlifyToken() {
-    try { return localStorage.getItem(NETLIFY_TOKEN_KEY) || ""; }
-    catch (e) { return ""; }
-}
-
-function saveNetlifyToken(token) {
-    try { localStorage.setItem(NETLIFY_TOKEN_KEY, token); }
-    catch (e) { /* localStorage unavailable */ }
-}
-
 function showPublishPhase(phase) {
     el.publishDeploying.classList.add("hidden");
     el.publishSuccess.classList.add("hidden");
@@ -197,29 +187,24 @@ function showPublishPhase(phase) {
     }
 }
 
-function saveTokenAndPublish() {
-    var token = (el.netlifyToken.value || "").trim();
-    if (!token) {
-        setStatus("Please paste your Netlify personal access token.", "error");
-        el.netlifyToken.focus();
-        return;
+function downloadBlob(blob, filename) {
+    var url = URL.createObjectURL(blob);
+    var link = document.createElement("a");
+    link.href = url;
+    link.download = filename;
+    document.body.appendChild(link);
+    link.click();
+    link.remove();
+    URL.revokeObjectURL(url);
+}
+
+function redownloadPublishZip() {
+    if (state.publishZipBlob) {
+        downloadBlob(state.publishZipBlob, "tour-deploy.zip");
     }
-    saveNetlifyToken(token);
-    el.netlifyTokenSetup.classList.add("hidden");
-    publishToNetlify();
 }
 
 async function publishToNetlify() {
-    var token = getNetlifyToken();
-    if (!token) {
-        showPublishPhase(null);
-        el.netlifyTokenSetup.classList.remove("hidden");
-        el.netlifyTokenSetup.scrollIntoView({ behavior: "smooth", block: "center" });
-        el.netlifyToken.focus();
-        setStatus("Connect your Netlify account to publish. Follow the steps below.", "");
-        return;
-    }
-
     const draftConfig = buildConfig();
     const messages = validateConfig(draftConfig);
     if (messages.length) {
@@ -230,9 +215,8 @@ async function publishToNetlify() {
 
     state.publishState = "deploying";
     el.publishBtn.disabled = true;
-    el.publishBtn.textContent = "Publishing\u2026";
+    el.publishBtn.textContent = "Preparing\u2026";
     el.publishBtn.classList.add("is-deploying");
-    el.netlifyTokenSetup.classList.add("hidden");
     showPublishPhase(el.publishDeploying);
 
     try {
@@ -244,65 +228,26 @@ async function publishToNetlify() {
         zip.file("index.html", html);
         const zipBlob = await zip.generateAsync({ type: "blob" });
 
-        const response = await fetch("https://api.netlify.com/api/v1/sites", {
-            method: "POST",
-            headers: {
-                "Content-Type": "application/zip",
-                "Authorization": "Bearer " + token,
-            },
-            body: zipBlob,
-        });
+        state.publishZipBlob = zipBlob;
 
-        if (response.status === 401 || response.status === 403) {
-            saveNetlifyToken("");
-            throw new Error("Your Netlify token was invalid or expired. Click \"Publish to Web\" again to enter a new one.");
-        }
+        downloadBlob(zipBlob, "tour-deploy.zip");
 
-        if (!response.ok) {
-            throw new Error("Netlify returned an error (status " + response.status + "). Please try again in a moment.");
-        }
-
-        const site = await response.json();
-        const liveUrl = site.ssl_url || site.url || "";
-        const claimUrl = site.claim_url || "";
-
-        if (!liveUrl) {
-            throw new Error("Deploy succeeded but no URL was returned. Please try again.");
-        }
+        window.open("https://app.netlify.com/drop", "_blank");
 
         state.publishState = "success";
-        state.publishUrl = liveUrl;
-        state.publishClaimUrl = claimUrl;
-        state.publishSiteName = site.name || "";
-
-        el.publishOpen.href = liveUrl;
-        el.publishUrlDisplay.value = liveUrl;
-        el.publishClaim.href = claimUrl;
-        el.publishClaim.classList.toggle("hidden", !claimUrl);
         showPublishPhase(el.publishSuccess);
 
         persistNextVersion(versionInfo);
         refreshVersionUI();
-        setStatus("Published! Your tour is live.", "success");
+        setStatus("Your tour file is ready. Follow the steps below to go live.", "success");
     } catch (error) {
         state.publishState = "error";
         el.publishErrorMessage.textContent = (error && error.message) || "An unexpected error occurred.";
         showPublishPhase(el.publishError);
-        setStatus("Publishing failed. See details below.", "error");
+        setStatus("Preparation failed. See details below.", "error");
     } finally {
         el.publishBtn.textContent = "Publish to Web";
         el.publishBtn.classList.remove("is-deploying");
         updateBuilderState();
     }
-}
-
-function copyPublishUrl() {
-    if (!state.publishUrl) return;
-    navigator.clipboard.writeText(state.publishUrl).then(function () {
-        el.copyPublishUrl.textContent = "Copied!";
-        setTimeout(function () { el.copyPublishUrl.textContent = "Copy Link"; }, 2000);
-    }).catch(function () {
-        el.copyPublishUrl.textContent = "Copy failed";
-        setTimeout(function () { el.copyPublishUrl.textContent = "Copy Link"; }, 2000);
-    });
 }

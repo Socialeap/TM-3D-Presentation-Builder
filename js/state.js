@@ -13,9 +13,7 @@ const state = {
     nextModelKey: 1,
     behaviorModalOpen: false,
     publishState: "idle",
-    publishUrl: "",
-    publishClaimUrl: "",
-    publishSiteName: "",
+    publishZipBlob: null,
 };
 
 const el = {
@@ -81,11 +79,6 @@ const el = {
     publishSuccess: document.getElementById("publish-success"),
     publishError: document.getElementById("publish-error"),
     publishErrorMessage: document.getElementById("publish-error-message"),
-    publishOpen: document.getElementById("publish-open"),
-    publishUrlDisplay: document.getElementById("publish-url-display"),
-    copyPublishUrl: document.getElementById("copy-publish-url"),
-    publishClaim: document.getElementById("publish-claim"),
-    netlifyTokenSetup: document.getElementById("netlify-token-setup"),
-    netlifyToken: document.getElementById("netlify-token"),
-    saveTokenPublish: document.getElementById("save-token-publish"),
+    publishOpenDrop: document.getElementById("publish-open-drop"),
+    publishRedownload: document.getElementById("publish-redownload"),
 };
