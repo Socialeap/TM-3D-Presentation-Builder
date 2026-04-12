@@ -174,7 +174,38 @@ async function generateFile() {
     }
 }
 
+function getNetlifyToken() {
+    try { return localStorage.getItem(NETLIFY_TOKEN_KEY) || ""; }
+    catch (e) { return ""; }
+}
+
+function saveNetlifyToken(token) {
+    try { localStorage.setItem(NETLIFY_TOKEN_KEY, token); }
+    catch (e) { /* localStorage unavailable */ }
+}
+
+function saveTokenAndPublish() {
+    var token = (el.netlifyToken.value || "").trim();
+    if (!token) {
+        setStatus("Please paste your Netlify personal access token.", "error");
+        el.netlifyToken.focus();
+        return;
+    }
+    saveNetlifyToken(token);
+    el.netlifyTokenSetup.classList.add("hidden");
+    publishToNetlify();
+}
+
 async function publishToNetlify() {
+    var token = getNetlifyToken();
+    if (!token) {
+        el.netlifyTokenSetup.classList.remove("hidden");
+        el.publishResult.classList.add("hidden");
+        el.netlifyToken.focus();
+        setStatus("Connect your Netlify account to publish. Paste your token below.", "");
+        return;
+    }
+
     const draftConfig = buildConfig();
     const messages = validateConfig(draftConfig);
     if (messages.length) {
@@ -188,6 +219,7 @@ async function publishToNetlify() {
     el.publishBtn.textContent = "Publishing\u2026";
     el.publishBtn.classList.add("is-deploying");
     el.publishResult.classList.add("hidden");
+    el.netlifyTokenSetup.classList.add("hidden");
     setStatus("Packaging and deploying your tour\u2026", "");
 
     try {
@@ -201,9 +233,17 @@ async function publishToNetlify() {
 
         const response = await fetch("https://api.netlify.com/api/v1/sites", {
             method: "POST",
-            headers: { "Content-Type": "application/zip" },
+            headers: {
+                "Content-Type": "application/zip",
+                "Authorization": "Bearer " + token,
+            },
             body: zipBlob,
         });
+
+        if (response.status === 401 || response.status === 403) {
+            saveNetlifyToken("");
+            throw new Error("Token was rejected by Netlify. Click Publish to Web again to enter a new token.");
+        }
 
         if (!response.ok) {
             throw new Error("Netlify returned status " + response.status);
