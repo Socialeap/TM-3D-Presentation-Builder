@@ -58,6 +58,7 @@ el.behaviorModelSelect.addEventListener("change", () => {
 el.generateBtn.addEventListener("click", generateFile);
 el.publishBtn.addEventListener("click", publishToNetlify);
 el.copyPublishUrl.addEventListener("click", copyPublishUrl);
+el.publishUrlDisplay.addEventListener("click", function () { this.select(); });
 el.saveTokenPublish.addEventListener("click", saveTokenAndPublish);
 el.netlifyToken.addEventListener("keydown", function (e) {
     if (e.key === "Enter") saveTokenAndPublish();

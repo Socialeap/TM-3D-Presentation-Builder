@@ -229,27 +229,46 @@
                         </p>
                     </div>
                     <div class="publish-result-card hidden" id="publish-result" style="margin-top: 18px;">
-                        <h3>Your Tour is Live</h3>
-                        <div class="publish-url-row">
-                            <a class="publish-url" id="publish-url" href="#" target="_blank" rel="noopener noreferrer"></a>
-                            <button type="button" class="btn-secondary btn-copy" id="copy-publish-url">Copy URL</button>
+                        <div id="publish-deploying" class="publish-phase hidden">
+                            <div class="publish-spinner-row">
+                                <div class="publish-spinner"></div>
+                                <div>
+                                    <h3 class="publish-phase-title">Publishing Your Tour&hellip;</h3>
+                                    <p class="field-hint" style="margin: 4px 0 0;">Packaging and deploying &mdash; this usually takes a few seconds.</p>
+                                </div>
+                            </div>
                         </div>
-                        <p class="publish-meta" id="publish-meta"></p>
-                        <a class="btn-claim" id="publish-claim" href="#" target="_blank" rel="noopener noreferrer">
-                            Keep this link permanently &mdash; claim your site on Netlify
-                        </a>
-                        <p class="field-hint">Without claiming, the site expires. Claiming is free and lets you add a custom domain.</p>
+                        <div id="publish-success" class="publish-phase hidden">
+                            <h3 class="publish-phase-title publish-success-title">Your Tour is Live!</h3>
+                            <p class="publish-success-sub">Your Matterport presentation is published and ready to share.</p>
+                            <a class="btn-open-site" id="publish-open" href="#" target="_blank" rel="noopener noreferrer">Open Your Published Tour</a>
+                            <div class="publish-url-row">
+                                <input type="text" class="publish-url-display" id="publish-url-display" readonly />
+                                <button type="button" class="btn-secondary btn-copy" id="copy-publish-url">Copy Link</button>
+                            </div>
+                            <a class="btn-claim" id="publish-claim" href="#" target="_blank" rel="noopener noreferrer">
+                                Claim this site on Netlify to keep it permanently
+                            </a>
+                            <p class="field-hint">Claiming is free. It lets you keep the URL, update the tour later, and add a custom domain.</p>
+                        </div>
+                        <div id="publish-error" class="publish-phase hidden">
+                            <h3 class="publish-phase-title publish-error-title">Publishing Failed</h3>
+                            <p class="publish-error-message" id="publish-error-message"></p>
+                            <p class="field-hint">You can still use <strong>Generate index.html</strong> to download your tour and host it manually.</p>
+                        </div>
                     </div>
                     <div class="netlify-token-card hidden" id="netlify-token-setup" style="margin-top: 18px;">
                         <h3>Connect to Netlify (one-time setup)</h3>
                         <p class="field-hint" style="margin-top: 0;">Paste a free personal access token so the builder can publish on your behalf. You only need to do this once.</p>
+                        <ol class="token-steps">
+                            <li>Open <a href="https://app.netlify.com/user/applications#personal-access-tokens" target="_blank" rel="noopener noreferrer">app.netlify.com &rarr; Personal Access Tokens</a></li>
+                            <li>Click <strong>New access token</strong>, name it anything (e.g. "Tour Builder")</li>
+                            <li>Copy the token and paste it below</li>
+                        </ol>
                         <div class="token-input-row">
                             <input type="password" id="netlify-token" class="token-input" placeholder="Paste your Netlify token here" autocomplete="off" />
                             <button type="button" class="btn-publish" id="save-token-publish">Save &amp; Publish</button>
                         </div>
-                        <p class="field-hint">
-                            <a href="https://app.netlify.com/user/applications#personal-access-tokens" target="_blank" rel="noopener noreferrer">Get your free token here</a> &mdash; click <strong>New access token</strong>, name it anything, and copy the value.
-                        </p>
                     </div>
                     <div class="preview-card" style="margin-top: 18px;">
                         <h3>What Ships in the Export</h3>
