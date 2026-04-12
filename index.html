@@ -241,18 +241,19 @@
                             </div>
                         </div>
                         <div id="publish-success" class="publish-phase hidden">
-                            <h3 class="publish-phase-title publish-success-title">Your Tour is Ready to Publish!</h3>
-                            <p class="publish-success-sub">Your site file has been downloaded and Netlify Drop is open in a new tab.</p>
+                            <h3 class="publish-phase-title publish-success-title">Your Tour File is Ready!</h3>
+                            <p class="publish-success-sub">Your index.html has been downloaded. Now upload it to Netlify to get your live URL.</p>
                             <ol class="publish-steps">
-                                <li>Find the downloaded <strong>tour-deploy.zip</strong> file (check your Downloads folder)</li>
-                                <li>Drag and drop it onto the <strong>Netlify Drop</strong> page (already open in a new tab)</li>
-                                <li>Wait for the upload to finish &mdash; your <strong>live URL</strong> will appear on screen!</li>
+                                <li>Go to <a href="https://app.netlify.com" target="_blank" rel="noopener noreferrer">app.netlify.com</a> and <strong>Sign Up</strong> for a free account (or log in)</li>
+                                <li>Enter your name, select <strong>Personal</strong>, and choose <strong>Beginner</strong></li>
+                                <li>On "Deploy your first project," scroll down to <strong>Upload your project files</strong></li>
+                                <li>Drag and drop your downloaded <strong>index.html</strong> into the upload area</li>
+                                <li>Your site is live! Click the green <strong>.netlify.app</strong> link to view your published tour</li>
                             </ol>
                             <div class="publish-action-row">
-                                <a class="btn-open-site" id="publish-open-drop" href="https://app.netlify.com/drop" target="_blank" rel="noopener noreferrer">Reopen Netlify Drop</a>
-                                <button type="button" class="btn-secondary" id="publish-redownload">Download ZIP Again</button>
+                                <a class="btn-open-site" id="publish-open-drop" href="https://app.netlify.com" target="_blank" rel="noopener noreferrer">Open Netlify</a>
+                                <button type="button" class="btn-secondary" id="publish-redownload">Download index.html Again</button>
                             </div>
-                            <p class="field-hint">No account required. After your site is live, Netlify will give you the option to claim it for free to keep the URL permanently.</p>
                         </div>
                         <div id="publish-error" class="publish-phase hidden">
                             <h3 class="publish-phase-title publish-error-title">Preparation Failed</h3>
@@ -270,7 +271,7 @@
                             </li>
                         </ul>
                     </div>
-                    <button type="button" class="btn-secondary" id="open-setup-guide" style="margin-top: 18px; width: 100%;">Step-by-Step Instructions</button>
+                    <button type="button" class="btn-secondary" id="open-setup-guide" style="margin-top: 18px; width: 100%;">How to Publish on Netlify</button>
                 </div>
             </aside>
         </div>
@@ -364,7 +365,6 @@
     </template>
 
 
-    <script src="https://cdn.jsdelivr.net/npm/jszip@3.10.1/dist/jszip.min.js"></script>
     <script src="js/constants.js"></script>
     <script src="js/utils.js"></script>
     <script src="js/state.js"></script>

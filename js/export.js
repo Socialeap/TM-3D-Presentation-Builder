@@ -187,20 +187,9 @@ function showPublishPhase(phase) {
     }
 }
 
-function downloadBlob(blob, filename) {
-    var url = URL.createObjectURL(blob);
-    var link = document.createElement("a");
-    link.href = url;
-    link.download = filename;
-    document.body.appendChild(link);
-    link.click();
-    link.remove();
-    URL.revokeObjectURL(url);
-}
-
-function redownloadPublishZip() {
-    if (state.publishZipBlob) {
-        downloadBlob(state.publishZipBlob, "tour-deploy.zip");
+function redownloadPublishHtml() {
+    if (state.publishHtml) {
+        downloadFile(state.publishHtml, "index.html");
     }
 }
 
@@ -224,22 +213,18 @@ async function publishToNetlify() {
         const config = await buildExportConfig(versionInfo);
         const html = buildProductionHtml(config);
 
-        const zip = new JSZip();
-        zip.file("index.html", html);
-        const zipBlob = await zip.generateAsync({ type: "blob" });
+        state.publishHtml = html;
 
-        state.publishZipBlob = zipBlob;
+        downloadFile(html, "index.html");
 
-        downloadBlob(zipBlob, "tour-deploy.zip");
-
-        window.open("https://app.netlify.com/drop", "_blank");
+        window.open("https://app.netlify.com", "_blank");
 
         state.publishState = "success";
         showPublishPhase(el.publishSuccess);
 
         persistNextVersion(versionInfo);
         refreshVersionUI();
-        setStatus("Your tour file is ready. Follow the steps below to go live.", "success");
+        setStatus("Your index.html is ready. Follow the steps below to go live.", "success");
     } catch (error) {
         state.publishState = "error";
         el.publishErrorMessage.textContent = (error && error.message) || "An unexpected error occurred.";
