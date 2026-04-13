@@ -186,6 +186,13 @@ el.toggleReadiness.addEventListener("click", () => {
     el.clientPhone,
     el.contactNote,
     el.gateLabel,
+    el.socialLinkedIn,
+    el.socialX,
+    el.socialInstagram,
+    el.socialFacebook,
+    el.socialTiktok,
+    el.socialOther,
+    el.socialWebsite,
 ].forEach((input) => input.addEventListener("input", updateBuilderState));
 
 document.addEventListener("keydown", (event) => {
