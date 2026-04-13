@@ -100,7 +100,7 @@ function updateMiniPreview(config) {
         : config.models.length + " properties";
     el.miniCta.textContent = config.contact.agentName
         ? "Contact " + config.contact.agentName
-        : "Contact Agent";
+        : "Get In Touch";
     el.miniAudio.textContent = "Mute";
     el.miniAudioGroup.style.display = activeModel.musicUrl ? "inline-flex" : "none";
     document.documentElement.style.setProperty("--accent", config.accentColor);

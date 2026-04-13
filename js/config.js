@@ -30,6 +30,13 @@ function buildConfig() {
             email: el.clientEmail.value.trim(),
             phone: el.clientPhone.value.trim(),
             note: el.contactNote.value.trim() || "Ask a question or request a private showing.",
+            socialLinkedIn: el.socialLinkedIn.value.trim(),
+            socialX: el.socialX.value.trim(),
+            socialInstagram: el.socialInstagram.value.trim(),
+            socialFacebook: el.socialFacebook.value.trim(),
+            socialTiktok: el.socialTiktok.value.trim(),
+            socialOther: el.socialOther.value.trim(),
+            socialWebsite: el.socialWebsite.value.trim(),
         },
     };
 }
@@ -61,7 +68,7 @@ function validateConfig(config) {
     const validModelIdPattern = /^[A-Za-z0-9]{11}$/;
 
     if (!config.contact.email) {
-        messages.push("An agent email address is required for the inquiry form.");
+        messages.push("A contact email address is required for the inquiry form.");
     }
 
     if (!config.models.length) {

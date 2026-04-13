@@ -106,6 +106,13 @@ function loadSampleData() {
     el.clientEmail.value = "agent@example.com";
     el.clientPhone.value = "555-012-3456";
     el.contactNote.value = "Ask a question, request pricing, or schedule a private showing.";
+    el.socialLinkedIn.value = "https://linkedin.com/company/transcendencemedia";
+    el.socialX.value = "https://x.com/transcendmedia";
+    el.socialInstagram.value = "https://instagram.com/transcendencemedia";
+    el.socialFacebook.value = "";
+    el.socialTiktok.value = "";
+    el.socialOther.value = "";
+    el.socialWebsite.value = "https://transcendencemedia.com";
     el.gateLabel.value = "Enter Experience";
     resetBehaviorState();
 
